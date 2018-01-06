@@ -28,8 +28,8 @@
  */
 
 #include "crypto/scrypt.h"
-#include "../timedata.h"
-//#include "util.h"
+//#include "../timedata.h"
+#include "util.h"
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
@@ -263,7 +263,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 
 	// epoch times of chain start and current block time
 	int64_t nChainStartTime = 1515002093;
-	int64_t nTimestamp = GetAdjustedTime();
+	int64_t nTimestamp = 1515002094;
 
 	// n-factor will change every this interval is hit
 	int64_t nChangeInterval = 17280000; // 200 days
@@ -315,11 +315,12 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 	PBKDF2_SHA256((const uint8_t *)input, 80, B, 128, 1, (uint8_t *)output, 32);
 }
 
-#if defined(USE_SSE2)
-// By default, set to generic scrypt function. This will prevent crash in case when scrypt_detect_sse2() wasn't called
 void (*scrypt_1024_1_1_256_sp_detected)(const char *input, char *output, char *scratchpad) = &scrypt_1024_1_1_256_sp_generic;
+//#if defined(USE_SSE2)
+// By default, set to generic scrypt function. This will prevent crash in case when scrypt_detect_sse2() wasn't called
+//void (*scrypt_1024_1_1_256_sp_detected)(const char *input, char *output, char *scratchpad) = &scrypt_1024_1_1_256_sp_generic;
 
-std::string scrypt_detect_sse2()
+/*std::string scrypt_detect_sse2()
 {
     std::string ret;
 #if defined(USE_SSE2_ALWAYS)
@@ -352,7 +353,7 @@ std::string scrypt_detect_sse2()
     return ret;
 }
 #endif
-
+*/
 void scrypt_1024_1_1_256(const char *input, char *output)
 {
 	char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
