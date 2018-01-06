@@ -45,6 +45,8 @@
 #include <cpuid.h>
 #endif
 //#endif
+unsigned char Nfactor;
+
 
 static inline uint32_t be32dec(const void *pp)
 {
@@ -258,7 +260,7 @@ static inline void xor_salsa8(uint32_t B[16], const uint32_t Bx[16])
 void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scratchpad)
 {
 	// min 10 max 20. this gives N = 2048 and N = 2097152
-	const unsigned char minNfactor = 10;
+	/*const unsigned char minNfactor = 10;
 	const unsigned char maxNfactor = 20;
 
 	// epoch times of chain start and current block time
@@ -266,18 +268,17 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 	int64_t nTimestamp = 1515002092; //GetAdjustedTime();
 
 	// n-factor will change every this interval is hit
-	int64_t nChangeInterval = 17280000; // 200 days
+	int64_t nChangeInterval = 17280000; // 200 days*/
 
 	uint8_t B[128];
 	uint32_t X[32];
 	uint32_t *V;
 	uint32_t i, j, k, N;
-	unsigned char Nfactor;
 
 	// calculate Nfactor
-	if (nTimestamp <= nChainStartTime) {
-		Nfactor = minNfactor;
-	} /*else {
+	//if (nTimestamp <= nChainStartTime) {
+	//	Nfactor = 9;
+	/*} /*else {
 		int64_t s = nTimestamp - nChainStartTime;
 		int n = s/nChangeInterval + 10;
 		if (n < 0) n = 0;
@@ -315,7 +316,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 	PBKDF2_SHA256((const uint8_t *)input, 80, B, 128, 1, (uint8_t *)output, 32);
 }
 
-void (*scrypt_1024_1_1_256_sp_detected)(const char *input, char *output, char *scratchpad) = &scrypt_1024_1_1_256_sp_generic;
+//void (*scrypt_1024_1_1_256_sp_detected)(const char *input, char *output, char *scratchpad) = &scrypt_1024_1_1_256_sp_generic;
 //#if defined(USE_SSE2)
 // By default, set to generic scrypt function. This will prevent crash in case when scrypt_detect_sse2() wasn't called
 //void (*scrypt_1024_1_1_256_sp_detected)(const char *input, char *output, char *scratchpad) = &scrypt_1024_1_1_256_sp_generic;
@@ -356,6 +357,27 @@ void (*scrypt_1024_1_1_256_sp_detected)(const char *input, char *output, char *s
 */
 void scrypt_1024_1_1_256(const char *input, char *output)
 {
-	char scratchpad[SCRYPT_SCRATCHPAD_SIZE];
+	printf("being used");
+	const unsigned char minNfactor = 10;
+	const unsigned char maxNfactor = 20;
+
+	// epoch times of chain start and current block time
+	int64_t nChainStartTime = 1515002093;
+	int64_t nTimestamp = 1515002092; //GetAdjustedTime();
+
+	// n-factor will change every this interval is hit
+	int64_t nChangeInterval = 17280000;
+
+	if (nTimestamp <= nChainStartTime) {
+		Nfactor = minNfactor;
+	} else {
+		int64_t s = nTimestamp - nChainStartTime;
+		int n = s/nChangeInterval + 10;
+		if (n < 0) n = 0;
+		unsigned char tempN = (unsigned char) n;
+		Nfactor = std::min(std::max(tempN, minNfactor), maxNfactor);
+	}
+	printf("nfactor %d\n", Nfactor);
+	char scratchpad[((1 << (Nfactor + 1)) * 128 ) + 63];
     scrypt_1024_1_1_256_sp(input, output, scratchpad);
 }
