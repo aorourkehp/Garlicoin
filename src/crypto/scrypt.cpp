@@ -292,7 +292,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 
 	for (k = 0; k < 32; k++)
 		X[k] = le32dec(&B[4 * k]);
-
+  
 	// assign N
 	N = (1 << (Nfactor + 1));
 
@@ -358,9 +358,8 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 void scrypt_1024_1_1_256(const char *input, char *output)
 {
 	printf("being used");
-	const unsigned char minNfactor = 10;
+	const unsigned char minNfactor = 9;
 	const unsigned char maxNfactor = 20;
-
 	// epoch times of chain start and current block time
 	int64_t nChainStartTime = 1515002093;
 	int64_t nTimestamp = 1515002092; //GetAdjustedTime();
