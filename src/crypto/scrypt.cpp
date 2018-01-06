@@ -263,7 +263,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 
 	// epoch times of chain start and current block time
 	int64_t nChainStartTime = 1515002093;
-	int64_t nTimestamp = 1515002094; //GetAdjustedTime();
+	int64_t nTimestamp = 1515002092; //GetAdjustedTime();
 
 	// n-factor will change every this interval is hit
 	int64_t nChangeInterval = 17280000; // 200 days
@@ -277,13 +277,13 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 	// calculate Nfactor
 	if (nTimestamp <= nChainStartTime) {
 		Nfactor = minNfactor;
-	} else {
+	} /*else {
 		int64_t s = nTimestamp - nChainStartTime;
 		int n = s/nChangeInterval + 10;
 		if (n < 0) n = 0;
 		unsigned char tempN = (unsigned char) n;
 		Nfactor = std::min(std::max(tempN, minNfactor), maxNfactor);
-	}
+	}*/
 
 	V = (uint32_t *)(((uintptr_t)(scratchpad) + 63) & ~ (uintptr_t)(63));
 
