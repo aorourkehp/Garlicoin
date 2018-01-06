@@ -36,7 +36,7 @@
 #include <openssl/sha.h>
 //#include <timedata.h>
 
-#if defined(USE_SSE2) && !defined(USE_SSE2_ALWAYS)
+//#if defined(USE_SSE2) && !defined(USE_SSE2_ALWAYS)
 #ifdef _MSC_VER
 // MSVC 64bit is unable to use inline asm
 #include <intrin.h>
@@ -44,7 +44,7 @@
 // GCC Linux or i686-w64-mingw32
 #include <cpuid.h>
 #endif
-#endif
+//#endif
 
 static inline uint32_t be32dec(const void *pp)
 {
@@ -263,7 +263,7 @@ void scrypt_1024_1_1_256_sp_generic(const char *input, char *output, char *scrat
 
 	// epoch times of chain start and current block time
 	int64_t nChainStartTime = 1515002093;
-	int64_t nTimestamp = 1515002094;
+	int64_t nTimestamp = 1515002094; //GetAdjustedTime();
 
 	// n-factor will change every this interval is hit
 	int64_t nChangeInterval = 17280000; // 200 days
